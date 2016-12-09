@@ -1,0 +1,7 @@
+.gradle
+.DS_Store
+.idea
+out
+*.pyc
+*.iml
+gradle*
