@@ -1,0 +1,56 @@
+#editor {
+  width:56em;
+  height: 35em;
+  margin-left: 1em;
+}
+
+#pre, #post {
+  background-color: #444444;
+  height: 10em;
+  width: 54em;
+  margin: 1em;
+  padding: 1em;
+}
+
+#visualize {
+  background-color: #000000;
+  height: 45em;
+  width: 47em;
+  margin: 1em;
+  padding: 1em;
+}
+
+.horizontal-container {
+  display: flex;
+  flex-direction: row;
+  color: orange;
+}
+
+.vertical-container {
+  display: flex;
+  flex-direction: column;
+  color: orange;
+  width: 300em;
+}
+
+#search {
+  margin: 2em;
+  width: 3em;
+  font-size: 30px;
+}
+
+text {
+    font: bold 20px monospace;
+}
+
+.enter {
+    fill: green;
+}
+
+.update {
+    fill: #333;
+}
+
+.exit {
+    fill: brown;
+}
