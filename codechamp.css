@@ -1,0 +1,58 @@
+.horizontal-container {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.vertical-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.visualize-box {
+  width: 40em;
+}
+
+.visualize {
+  height: 35em;
+}
+.operations {
+  height: 2em;
+}
+
+.vertical-width {
+  width: 40em;
+}
+
+.vertical-width-editor {
+  width:53em;
+}
+
+.tall {
+  height: 880px;
+}
+
+.third-tall {
+  height: 240px;
+}
+
+.margin {
+  margin: 20px;
+  padding: 20px;
+}
+
+.black-bg {
+  background-color: #000000;
+}
+
+.grey-bg {
+  background-color: #444444;
+}
+
+.orange-text {
+  color: orange;
+}
+
+.white-text {
+  color: white;
+}
