@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html>
+<head>
+  <title>Binary Search Visualization</title>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <style>
+    text {
+      font: bold 40px monospace;
+    }
+    .enter {
+      fill: red;
+    }
+    .update {
+      fill: blue;
+    }
+    .exit {
+      fill: gray;
+    }
+    .node {
+      opacity: 0.1
+    }
+  </style>
+</head>
+<body>
+  <script>
+
+    function binarySearch(list, low, high, key) {
+      var interval = setInterval(function() {
+        update(list.slice(low, high + 1))
+        var mid = parseInt(low + (high - low) / 2)
+        highlightMid(list, mid)
+        if (low < high) {
+          if (list[mid] < key) {
+            low = mid + 1;
+          }
+          else if (list[mid] > key) {
+            high = mid - 1;
+          }
+          else {
+            low = mid
+            high = mid
+            return mid
+          }
+        }
+        else if (low == high && key == list[low]) {
+          clearInterval(interval)
+        }
+        else {
+          update([":("])
+          clearInterval(interval)
+          return - 1
+        }
+      }, 3000)
+    }
+
+    var data = [10, 15, 20, 25, 30, 35, 40, 50, 60, 65, 70, 80, 85, 90]
+
+    binarySearch(data, 0, data.length - 1, 65)
+
+    var svg = d3.select("body").append("svg").attr("width", 1420).attr("height", 100).style("border", "4px solid lightgray"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height"),
+        g = svg.append("g").attr("transform", "translate(32," + (height / 2) + ")");
+
+    function highlightMid(list, index) {
+      var elements = g.selectAll("text")
+      var text = g.select("text:nth-child(" + (index + 1) + ")")
+      console.log(elements.size());
+      console.log(index);
+      console.log(text.size());
+      text.attr("class", "update")
+          .style("fill-opacity", 1)
+    }
+
+    function update(data) {
+      // console.log(data);
+      var t = d3.transition()
+                .duration(750);
+
+      // JOIN new data with old elements.
+      var text = g.selectAll("text")
+                  .data(data, function(d) { return d; });
+
+      // EXIT old elements not present in new data.
+      text.exit()
+          .attr("class", "exit")
+          .transition(t)
+          .attr("y", 60)
+          .style("fill-opacity", 1e-6)
+          // .remove();
+
+      // ENTER new elements present in new data.
+      text.enter()
+          .append("text")
+          .attr("class", "enter")
+          .attr("dy", ".30em")
+          .attr("y", -60)
+          .attr("x", function(d, i) { return i * 100; })
+          .style("fill-opacity", 1e-6)
+          .text(function(d) { return d; })
+          .transition(t)
+          .attr("y", 0)
+          .style("fill-opacity", 1);
+
+        // JOIN new data with old elements.
+        var node = g.selectAll("circle")
+                    .data(data, function(d) { return d; });
+
+        // EXIT old elements not present in new data.
+        node.exit()
+            .attr("class", "exit")
+            .transition(t)
+            .attr("cy", 60)
+            .style("fill-opacity", 1e-6)
+
+        // ENTER new elements present in new data.
+        node.enter()
+            .append("circle")
+            .attr("cy", "0")
+            .attr("r", 35)
+            .attr("cx", function(d, i) { return i * 100 + 25; })
+            .attr("class", "node")
+            .style("fill-opacity", 1e-6)
+            .transition(t)
+            .attr("cy", 0)
+            .style("fill-opacity", 1);
+    }
+
+  </script>
+</body>
+</html>
