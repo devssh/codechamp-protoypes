@@ -27,31 +27,34 @@ function visualized() {
         var globalData = trace.map(function (element) {
             return element["globals"]
         });
-        console.log(globalData)
         globalFrameRender(globalData);
     }
 
     function globalFrameRender(data) {
         var element = 0
-        var intevalD3 = setInterval(function () {
-            if (element == data.length) {
-                clearInterval(intevalD3);
+        var intervalD3 = setInterval(function () {
+            console.log(element == data.length, data.length, element);
+            if (element == data.length - 1) {
+                clearInterval(intervalD3);
             }
-            var globalObject = data[element]
-
+            var globalObject = data[element];
             var text = global.selectAll("text")
-                             .data(globalObject, function (d) {
-                                 console.log(d)
-                                 return d
+                             .data([globalObject], function (d) {
+                                 return JSON.stringify(d["a"]);
                              });
+
             text.exit()
-                .attr("y", 60);
+                .attr("class", "exit")
+                .attr("y", 60)
+                .remove();
 
             text.enter()
                 .append("text")
-                .attr("y", 20)
+                .attr("y", 60)
                 .attr("x", function(d, i) { return i * 100; })
-                .text(function(d) { return d; })
+                .text(function(d) {
+                    return JSON.stringify(d);
+                });
 
             element = element + 1;
         }, 1000);
