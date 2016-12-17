@@ -1,12 +1,15 @@
 
 #editor {
-  width:56em;
-  height: 35em;
+  background-color: #444444;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  padding: 1em;
+  width:54em;
+  height: 59em;
   margin-left: 1em;
 }
 
 #pre, #post {
-  background-color: #444444;
   height: 10em;
   width: 54em;
   margin: 1em;
