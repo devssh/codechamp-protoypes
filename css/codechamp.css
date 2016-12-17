@@ -1,26 +1,24 @@
 
 #editor {
   background-color: #444444;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  width:50em;
+  height: 54em;
   margin-top: 1em;
-  margin-bottom: 1em;
-  padding: 1em;
-  width:54em;
-  height: 59em;
   margin-left: 1em;
 }
 
-#pre, #post {
-  height: 10em;
-  width: 54em;
+#buttons {
   margin: 1em;
   padding: 1em;
+  height: 3em;
 }
 
 #visualize {
-  background-color: #8dd0ff;
-  /*background-color: #000000;*/
+  background-color: #eee;
   height: 45em;
-  width: 47em;
+  width: 46em;
   margin: 1em;
   padding: 1em;
 }
@@ -35,27 +33,5 @@
   display: flex;
   flex-direction: column;
   color: orange;
-  width: 300em;
-}
-
-#search {
-  margin: 2em;
-  width: 3em;
-  font-size: 30px;
-}
-
-text {
-    font: bold 20px monospace;
-}
-
-.enter {
-    fill: green;
-}
-
-.update {
-    fill: #333;
-}
-
-.exit {
-    fill: brown;
+  width: 100em;
 }

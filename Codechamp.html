@@ -3,7 +3,7 @@
 
     <head>
         <meta charset="utf-8">
-        <link rel="stylesheet" type="text/css" href="codechamp.css">
+        <link rel="stylesheet" type="text/css" href="css/codechamp.css">
         <title>Binary Search Visualization</title>
     </head>
 
@@ -11,17 +11,13 @@
         <div class="horizontal-container">
             <div class="vertical-container">
                 <div id="visualize"></div>
-                <div>
-                    <input type="button" id="search" value="Search" />
-                    <button onclick="visualized()" id="visualize_button">Visualize code</button>
-                </div>
             </div>
             <div class="vertical-container">
-                <div id="pre"></div>
-
                 <div id="editor"></div>
+                <div id="buttons">
+                    <button onclick="visualized()" id="visualize_button">Visualize code</button>
+                </div>
 
-                <div id="post"></div>
             </div>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
