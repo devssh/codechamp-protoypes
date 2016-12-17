@@ -16,7 +16,6 @@
 }
 
 #visualize {
-  background-color: #eee;
   height: 45em;
   width: 46em;
   margin: 1em;
@@ -34,4 +33,8 @@
   flex-direction: column;
   color: orange;
   width: 100em;
+}
+
+.mark-line {
+    background: black;
 }
