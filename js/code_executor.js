@@ -20,6 +20,8 @@ function visualized() {
         visualizeTrace(codeResponse["trace"]);
     });
 
+
+    d3.select("#visualize").selectAll("svg").remove();
     var svg = d3.select("#visualize").append("svg").attr("width", 1000).attr("height", 100),
         global = svg.append("g")
 
