@@ -1,0 +1,25 @@
+{
+  "name": "codechamp_prototypes",
+  "version": "1.0.0",
+  "description": "Codechamp Codechamp!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://DevashishThoughtWorks@bitbucket.org/akshaykurmi/codechamp_prototypes.git"
+  },
+  "keywords": [
+    "codechamp"
+  ],
+  "author": "Devashish, Akshay, Prashant",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/akshaykurmi/codechamp_prototypes#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "dependencies": {
+    "gulp-git": "^1.12.0"
+  }
+}
