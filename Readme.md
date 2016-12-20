@@ -3,6 +3,6 @@
 
 (Requires npm)To install gulp and node dependencies run init.sh ($ sh init.sh) 
 
-(Requiers gulp)To resolve dependencies run:
+(Requires gulp)To resolve dependencies run:
 gulp editor
 
