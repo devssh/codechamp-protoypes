@@ -42,22 +42,24 @@ function visualize() {
     }
 
     function renderCurrentStep(currentStep) {
-        renderGlobalFrame(currentStep.globals, currentStep.ordered_globals);
+        var orderedHeap = renderGlobalFrame(currentStep.globals, currentStep.ordered_globals);
 
-        renderHeap(currentStep.heap);
+        renderHeap(currentStep.heap, orderedHeap);
 
         highlightLine(currentStep.line);
     }
 
-    function renderHeap(heap) {
+    function renderHeap(heap, orderedHeap) {
+
         function range(count) {
             return Array.apply(0, Array(count))
                 .map(function (element, index) {
-                    return index + 1;
+                    return ""+(index + 1);
                 });
         }
+
+
         function stringify(type, arr) {
-            console.log(type, arr);
             if (type == "LIST") {
                 return "LIST => [" + arr.join(", ") + "]";
             } else if (type == "SET") {
@@ -70,12 +72,16 @@ function visualize() {
                     }).join(", ") + "}"
             }
         }
+
+        var filteredHeapKeys = range(Object.keys(heap).length).filter(function(d) {  return orderedHeap.indexOf(d) < 0; });
+        var orderedHeap = orderedHeap.concat(filteredHeapKeys);
+
         var text = d3.select("#heap")
             .selectAll("text")
-            .data(range(Object.keys(heap).length));
+            .data(orderedHeap);
         var rects = d3.select("#heap")
             .selectAll("rect")
-            .data(range(Object.keys(heap).length));
+            .data(orderedHeap);
 
         rects.enter()
             .append("rect")
@@ -93,9 +99,15 @@ function visualize() {
             .text(function (d) {
                 return stringify(heap[d][0], heap[d].slice(1));
             });
+
+        rects.attr("width", function (d) { return 30 + 10 * stringify(heap[d][0], heap[d].slice(1)).length; })
+        text.text(function (d) {
+            return stringify(heap[d][0], heap[d].slice(1));
+        });
     }
 
     function renderGlobalFrame(globalFrame, globalKeys) {
+        var orderedHeapKeys = [];
         var text = d3.select("#global_vars")
                       .selectAll("text")
                       .data(globalKeys);
@@ -124,11 +136,20 @@ function visualize() {
                 return d + " = " + globalFrame[d];
             });
 
+        rects.attr("width", function(d) {
+            if (typeof globalFrame[d] == "object") {
+                orderedHeapKeys.push(""+globalFrame[d][1]);
+                return 30 + 10 * d.length;
+            }
+            return 30 + 10 * (d+" = "+globalFrame[d]).length;
+        });
         text.text(function(d) {
             if (typeof globalFrame[d] == "object")
                 return d;
             return d + " = " + globalFrame[d];
         });
+
+        return orderedHeapKeys;
     }
 
     function highlightLine(lineNumber) {
