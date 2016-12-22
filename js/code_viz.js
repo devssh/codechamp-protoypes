@@ -1,10 +1,11 @@
-'use strict'
+/*globals ace:true*/
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.getSession().setMode("ace/mode/python");
 
 function visualize() {
+    'use strict';
 
     var send = {
         "user_script": editor.getValue(),
@@ -17,16 +18,18 @@ function visualize() {
 
     $.post("/cgi-bin/web_exec_py2.py", send, function (data) {
         var codeResponse = JSON.parse(data);
-        visualizeTrace(codeResponse["trace"]);
+        visualizeTrace(codeResponse.trace);
     });
 
     d3.select("#visualize").selectAll("svg").remove();
-    var svg = d3.select("#visualize").append("svg").style("width", "46em").style("height", "43em").style("background", "#eee");
-    var all_frames = svg.append("g").attr("id", "main_group");
-    var global_frame = all_frames.append("g").attr("id", "global_frame_group");
-    var elements_in_global_frame = global_frame.append("g").attr("class", "elements_group");
+    var svg = d3.select("#visualize")
+                .append("svg")
+                .style("width", "46em")
+                .style("height", "43em")
+                .style("background", "#eee");
+    svg.append("g").attr("id", "global_vars").attr("transform", "translate(20, 20)");
 
-    global_frame.append("circle").attr("cx", 300).attr("cy", 300).attr("r", 250);
+
     function visualizeTrace(trace) {
         var index = 0;
         var renderInterval = setInterval(function () {
@@ -35,53 +38,38 @@ function visualize() {
             }
             renderCurrentStep(trace[index]);
             index += 1;
-        }, 2000)
+        }, 2000);
     }
 
     function renderCurrentStep(currentStep) {
-
-        renderGlobalFrame(currentStep["globals"]);
+        renderGlobalFrame(currentStep.globals, currentStep.ordered_globals);
 
         // Heap
-        highlightLine(currentStep["line"]);
+
+        highlightLine(currentStep.line);
     }
 
-    function renderGlobalFrame(globalFrame) {
-        var previous_cx = 0;
-
-        elements_in_global_frame.selectAll("circle")
-            .data(Object.keys(globalFrame), function (d) {
-                return d;
-            })
-            .enter()
-            .append("circle")
-            .attr("r", function (d) {
-                return d.length * 10;
-            })
-            .attr("cx", function (d, i) {
-                previous_cx+=1;
-                return 150 * (2 *(i + 1)) + 2 * d.length * 10;
-            })
-            .attr("cy", 50)
-            .attr("class", "variable_circle");
-
-        console.log(Object.keys(globalFrame));
-
-        elements_in_global_frame.selectAll("text")
-            .data(Object.keys(globalFrame), function(d) {return d;})
-            .enter()
+    function renderGlobalFrame(globalFrame, globalKeys) {
+        console.log(globalFrame);
+        var text = d3.select("#global_vars")
+                      .selectAll("text")
+                      .data(globalKeys);
+        var rects = d3.select("#global_vars")
+                      .selectAll("rect")
+                      .data(globalKeys);
+        rects.enter()
+             .append("rect")
+             .attr("class", "global_var_rect")
+             .attr("x", "0")
+             .attr("y", function(d,i) { return i * 40; })
+             .attr("width", function(d) { return 30 + 10 * (d+" = "+globalFrame[d]).length;})
+             .attr("height", "30");
+        text.enter()
             .append("text")
-            .attr("class", "variable_text")
-            .attr("x", function (d, i) {
-                return 150 * (i + 1) + d.length * 10 + 150;
-            })
-            .attr("y", 50)
-            .attr("fill", "red")
-            .text(function (d) {
-                console.log(d);
-                return d;
-            })
-
+            .attr("class", "global_var_text")
+            .attr("dx", "17")
+            .attr("dy", function(d,i) { return 19 + i * 40; })
+            .text(function(d) { return d + " = " + globalFrame[d]; });
     }
 
     function highlightLine(lineNumber) {
