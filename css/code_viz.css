@@ -1,38 +1,46 @@
 
 #editor {
-  background-color: #444444;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  width:50em;
-  height: 54em;
-  margin-top: 1em;
-  margin-left: 1em;
+    background-color: #444444;
+    padding-top: 1em;
+    padding-bottom: 1em;
+    width: 50em;
+    height: 54em;
+    margin-top: 1em;
+    margin-left: 1em;
 }
 
 #buttons {
-  margin: 1em;
-  padding: 1em;
-  height: 3em;
+    margin: 1em;
+    padding: 1em;
+    height: 3em;
 }
 
 #visualize {
-  height: 45em;
-  width: 46em;
-  margin: 1em;
-  padding: 1em;
+    height: 45em;
+    width: 46em;
+    margin: 1em;
+    padding: 1em;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+svg {
+    width: 46em;
+    height: 50em;
+    background: #eee;
 }
 
 .horizontal-container {
-  display: flex;
-  flex-direction: row;
-  color: orange;
+    display: flex;
+    flex-direction: row;
+    color: orange;
 }
 
 .vertical-container {
-  display: flex;
-  flex-direction: column;
-  color: orange;
-  width: 100em;
+    display: flex;
+    flex-direction: column;
+    color: orange;
+    width: 100em;
 }
 
 .mark-line {

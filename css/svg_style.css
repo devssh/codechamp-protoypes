@@ -6,3 +6,12 @@
     background: blue;
     opacity: 0.4;
 }
+
+.heap_text {
+    font: 16px monospace
+}
+
+.heap_rect {
+    background: blue;
+    opacity: 0.4;
+}
