@@ -15,3 +15,7 @@
     background: blue;
     opacity: 0.4;
 }
+
+.global_var_name_rect {
+    fill: red;
+}
