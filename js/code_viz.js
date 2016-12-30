@@ -1,4 +1,4 @@
-/*globals ace:true*/
+/* jshint esversion:6 */
 
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
@@ -25,38 +25,11 @@ function visualize() {
     var svg = d3.select("#visualize")
         .append("svg");
 
-    var marker = svg.append("marker").attr("id", "arrow-head").attr("viewBox", "0 0 10 10").attr("refX", "0").attr("refY", "5").attr("markerUnits", "strokeWidth")
-        .attr("markerWidth", "8")
-        .attr("markerHeight", "6")
-        .attr("orient", "auto");
-
-    marker.append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
-
     // TODO: Change height of svg based on number of elements
 
-    svg.append("g").attr("id", "global_vars").attr("transform", "translate(20, 20)");
-    svg.append("g").attr("id", "heap").attr("transform", "translate(300, 20)");
-
-    var linePointsMap = {};
-
-    // type here is if the point is being added from stack/ global frame or heap
-    // type can be "heap" or "frame"
-    function addPointsToMap(heapKey, type, xValue, yValue) {
-        if (!(heapKey in linePointsMap)) {
-            linePointsMap[heapKey] = {}
-        }
-        if (type === "heap") {
-            linePointsMap[heapKey]["x2"] = xValue;
-            linePointsMap[heapKey]["y2"] = parseInt(yValue) + 15;
-        }
-        else if (type === "frame") {
-            linePointsMap[heapKey]["x1"] = xValue;
-            linePointsMap[heapKey]["y1"] = parseInt(yValue) + 15;
-        }
-    }
-
     function visualizeTrace(trace) {
-        linePointsMap = {};
+        svg.append("g").attr("id", "global_vars").attr("transform", "translate(20, 20)");
+        svg.append("g").attr("id", "heap").attr("transform", "translate(300, 20)");
         var index = 0;
         var renderInterval = setInterval(function () {
             if (index == trace.length - 1) {
@@ -65,6 +38,37 @@ function visualize() {
             renderCurrentStep(trace[index]);
             index += 1;
         }, 500);
+    }
+
+    function renderCurrentStep(currentStep) {
+        var orderedHeap = renderGlobalFrame(currentStep.globals, currentStep.ordered_globals);
+        renderHeap(currentStep.heap, orderedHeap);
+        drawLines();
+        highlightLine(currentStep.line);
+    }
+
+    var linePointsMap = {};
+
+    svg.append("marker").attr("id", "arrow-head").attr("viewBox", "0 0 10 10").attr("refX", "0").attr("refY", "5").attr("markerUnits", "strokeWidth")
+        .attr("markerWidth", "8")
+        .attr("markerHeight", "6")
+        .attr("orient", "auto")
+        .append("path").attr("d", "M 0 0 L 10 5 L 0 10 z");
+
+    // type here is if the point is being added from stack/ global frame or heap
+    // type can be "heap" or "frame"
+    function addPointsToMap(heapKey, type, xValue, yValue) {
+        if (!(heapKey in linePointsMap)) {
+            linePointsMap[heapKey] = {};
+        }
+        if (type === "heap") {
+            linePointsMap[heapKey].x2 = xValue;
+            linePointsMap[heapKey].y2 = parseInt(yValue) + 15;
+        }
+        else if (type === "frame") {
+            linePointsMap[heapKey].x1 = xValue;
+            linePointsMap[heapKey].y1 = parseInt(yValue) + 15;
+        }
     }
 
     function drawLines() {
@@ -93,30 +97,13 @@ function visualize() {
             .attr("stroke-width", "2")
             .attr("stroke", "blue")
             .attr("marker-end", "url(#arrow-head)");
-
     }
-
-    function renderCurrentStep(currentStep) {
-        var orderedHeap = renderGlobalFrame(currentStep.globals, currentStep.ordered_globals);
-
-        renderHeap(currentStep.heap, orderedHeap);
-
-        drawLines();
-
-        highlightLine(currentStep.line);
-    }
-
 
     function renderHeap(heap, orderedHeap) {
 
         function getSortedHeapKeys() {
-            return Object.keys(heap).map(function (d) {
-                return parseInt(d);
-            }).sort().map(function (d) {
-                return d.toString();
-            })
+            return Object.keys(heap).sort((a, b) => parseInt(a) < parseInt(b) ? -1 : 1);
         }
-
 
         function stringify(type, arr) {
             if (type == "LIST") {
@@ -128,14 +115,14 @@ function visualize() {
             } else if (type == "DICT") {
                 return "DICT => {" + arr.map(function (data) {
                         return data[0] + ":" + data[1];
-                    }).join(", ") + "}"
+                    }).join(", ") + "}";
             }
         }
 
         var filteredHeapKeys = getSortedHeapKeys().filter(function (d) {
             return orderedHeap.indexOf(d) < 0;
         });
-        var orderedHeap = orderedHeap.concat(filteredHeapKeys);
+        orderedHeap = orderedHeap.concat(filteredHeapKeys);
 
         var text = d3.select("#heap")
             .selectAll("text")
@@ -150,7 +137,6 @@ function visualize() {
             .attr("x", "0")
             .attr("y", function (d, i) {
                 var yPosition = i * 40;
-
                 addPointsToMap(d, "heap", 300, yPosition);
                 return yPosition;
             })
@@ -181,7 +167,6 @@ function visualize() {
 
     function renderGlobalFrame(globalFrame, globalKeys) {
 
-
         var orderedHeapKeys = [];
         var text = d3.select("#global_vars")
             .selectAll("text")
@@ -189,7 +174,6 @@ function visualize() {
         var rects = d3.select("#global_vars")
             .selectAll("rect")
             .data(globalKeys);
-        console.log(globalKeys);
 
         rects.enter()
             .append("rect")
@@ -199,12 +183,10 @@ function visualize() {
                 return i * 40;
             })
             .attr("width", function (d, i) {
-
                 if (typeof globalFrame[d] == "object") {
                     var width = 30 + 10 * d.length;
                     addPointsToMap(globalFrame[d][1], "frame", 20 + width, i * 40);
                     return width;
-
                 }
                 return 30 + 10 * (d + " = " + globalFrame[d]).length;
             })
@@ -245,6 +227,4 @@ function visualize() {
         $(".ace_line:nth-child(" + lineNumber + ")").addClass("mark-line");
         $(".ace_gutter-cell:nth-child(" + lineNumber + ")").addClass("mark-line");
     }
-
-
 }
