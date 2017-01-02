@@ -4,6 +4,7 @@
 
 .global_var_rect {
     background: blue;
+    fill : gray;
     opacity: 0.4;
 }
 

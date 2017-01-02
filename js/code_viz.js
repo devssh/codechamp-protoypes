@@ -172,13 +172,19 @@ function visualize() {
             .selectAll("text")
             .data(globalKeys);
         var rects = d3.select("#global_vars")
-            .selectAll("rect")
+            .selectAll("rect.global_var_rect")
             .data(globalKeys);
+
 
         rects.enter()
             .append("rect")
             .attr("class", "global_var_rect")
-            .attr("x", "0")
+            .attr("x", function (d) {
+                if (typeof globalFrame[d] == "object") {
+                    return 30 + 10 * d.length;
+                }
+                return 15 + 10 * ((d + " ").length + 0.5);
+            })
             .attr("y", function (d, i) {
                 return i * 40;
             })
@@ -186,9 +192,30 @@ function visualize() {
                 if (typeof globalFrame[d] == "object") {
                     var width = 30 + 10 * d.length;
                     addPointsToMap(globalFrame[d][1], "frame", 20 + width, i * 40);
-                    return width;
+                    return width / 2;
                 }
-                return 30 + 10 * (d + " = " + globalFrame[d]).length;
+                return 30 + 10 * (" " + globalFrame[d]).length - (15 + 10 * ((d + " ").length + 0.5));
+            })
+            .attr("height", "30");
+
+        var nameRectangles = d3.select("#global_vars")
+            .selectAll("rect.global_var_name_rect")
+            .data(globalKeys);
+
+        nameRectangles
+            .enter()
+            .append("rect")
+            .attr("class", "global_var_name_rect")
+            .attr("x", "0")
+            .attr("y", function (d, i) {
+                return i * 40;
+            })
+            .attr("width", function (d, i) {
+                console.log("hey" + d);
+                if (typeof globalFrame[d] == "object") {
+                    return 30 + 10 * d.length;
+                }
+                return 15 + 10 * ((d + " ").length + 0.5);
             })
             .attr("height", "30");
 
